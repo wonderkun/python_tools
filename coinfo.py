@@ -6,6 +6,7 @@ from collections import namedtuple
 
 class CollectionInfo(object):
     """docstring for CoInfo.
+        .hg  https://github.com/kost/dvcs-ripper
         index.bak
         index.php.bak
         index.php.
@@ -20,13 +21,15 @@ class CollectionInfo(object):
         index.zip
         www.rar
         www.zip
-        .svn
+        .svn   https://pan.baidu.com/s/1mrNpB
         .git
-        .DS_Store
+        .DS_Store  https://github.com/lijiejie/ds_store_exp
         .index.php.swo
         .index.php.swn
         robots.txt
         phpstorm/   .idea/workspace.xml
+        CVS http://www.am0s.com/CVS/Root 返回根信息 http://www.am0s.com/CVS/Entries 返回所有文件的结构
+        bk clone http://url/name dir
     """
     def __init__(self,url='',file=''):
 
@@ -35,7 +38,8 @@ class CollectionInfo(object):
 
         self.fileBackList = ['.bak','.','~','.pyc','.swp','.swpx','.swm','.swo','.swn']
         self.fileList = ['index.bak','index.tar.gz','index.zip','index.rar','www.tar.gz','www.rar','www.zip','.svn','.git','.DS_Store',
-        'robots.txt','.idea/']
+        'robots.txt','.idea/','.hg','www.7z','WEB-INF/web.xml','WEB-INF/classes/','WEB-INF/lib/','WEB-INF/src/',
+        'WEB-INF/database.properties','CVS']
         self.vimBackList = ['','~','.swp','.swpx','.swm','.swo','.swn']
         self.UrlList = []
         self.getUrlList()
