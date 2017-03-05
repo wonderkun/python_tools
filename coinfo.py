@@ -39,7 +39,7 @@ class CollectionInfo(object):
         self.fileBackList = ['.bak','.','~','.pyc','.swp','.swpx','.swm','.swo','.swn']
         self.fileList = ['index.bak','index.tar.gz','index.zip','index.rar','www.tar.gz','www.rar','www.zip','.svn','.git','.DS_Store',
         'robots.txt','.idea/','.hg','www.7z','WEB-INF/web.xml','WEB-INF/classes/','WEB-INF/lib/','WEB-INF/src/',
-        'WEB-INF/database.properties','CVS']
+        'WEB-INF/database.properties','CVS','phpMyAdmin','phpmyadmin']
         self.vimBackList = ['','~','.swp','.swpx','.swm','.swo','.swn']
         self.UrlList = []
         self.getUrlList()
@@ -65,7 +65,6 @@ class CollectionInfo(object):
         "User-Agent":User_Agent,
         "Cookie":cookies
         }
-
         for  url in self.UrlList:
             res = requests.get(url,headers=header)
             print url ,res.status_code
