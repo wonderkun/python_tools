@@ -12,7 +12,7 @@ import os
 
 class Downloader(threading.Thread):
 
-    def __init__(self,url=None,id=0,tmpFilename=None,filename=None,headers={},proxies={},RLock=None,block=1024*3):
+    def __init__(self,url=None,id=0,tmpFilename=None,filename=None,headers={},proxies={},RLock=None,block=1024*10):
         threading.Thread.__init__(self)
         self.id = str(id)
         self.filename = filename
@@ -31,14 +31,10 @@ class Downloader(threading.Thread):
         if info[self.id]["start"] >= info[self.id]["end"]:
             return
 
-        headers["Range"]="bytes=%d-%d"%(info[self.id]["start"],info[self.id]["end"]-1)
-        res = requests.get(self.url,headers=headers,stream=True,proxies=self.proxies)
+        self.headers["Range"]="bytes=%d-%d"%(info[self.id]["start"],info[self.id]["end"]-1)
+        res = requests.get(self.url,headers=self.headers,stream=True,proxies=self.proxies)
         for chunk in res.iter_content(chunk_size = self.block):
             if chunk:
-                self.RLock.acquire()
-                print self.id,info[self.id]["start"],info[self.id]["end"]
-                print headers["Range"]
-                self.RLock.release()
                 self.RLock.acquire()
                 with open(self.tmpFilename,'r') as file:
                     info = json.load(file)
