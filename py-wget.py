@@ -11,6 +11,7 @@ import json
 import os
 
 class Downloader(threading.Thread):
+    info = {} #注册为类变量
 
     def __init__(self,url=None,id=0,tmpFilename=None,filename=None,headers={},proxies={},RLock=None,block=1024*10):
         threading.Thread.__init__(self)
@@ -25,32 +26,48 @@ class Downloader(threading.Thread):
 
     def run(self):
 
-        with open(self.tmpFilename) as file:
-            info = json.load(file)
+        with open(self.tmpFilename,'r') as file:
+            self.__class__.info = json.load(file)
 
-        if info[self.id]["start"] >= info[self.id]["end"]:
+        if self.__class__.info[self.id]["start"] >= self.__class__.info[self.id]["end"]:  #通过实例访问类变量
             return
 
-        self.headers["Range"]="bytes=%d-%d"%(info[self.id]["start"],info[self.id]["end"]-1)
-        res = requests.get(self.url,headers=self.headers,stream=True,proxies=self.proxies)
-        for chunk in res.iter_content(chunk_size = self.block):
-            if chunk:
+        while self.__class__.info[self.id]["start"] + self.block < self.__class__.info[self.id]["end"]:
+            start = self.__class__.info[self.id]["start"]
+            self.headers["Range"]="bytes=%d-%d"%(self.__class__.info[self.id]["start"],self.__class__.info[self.id]["start"]+self.block)
+            res = requests.get(self.url,headers=self.headers,proxies=self.proxies)
+            if res.content:
+                # print "\n",start
+                self.__class__.info[self.id]["start"] = start + len(res.content)
                 self.RLock.acquire()
-                with open(self.tmpFilename,'r') as file:
-                    info = json.load(file)
-                    start = info[self.id]["start"]
-                    info[self.id]["start"] = start + len(chunk)
                 with open(self.tmpFilename,'w') as file:
-                    json.dump(info,file)
-
+                    json.dump(self.__class__.info,file)
+                self.RLock.release()
                 with open(self.filename,'r+b') as file:
                     file.seek(start)
                     var = file.tell()
-                    file.write(chunk)
+                    file.write(res.content)
+                    file.flush()
+
+        else:
+            start = self.__class__.info[self.id]["start"]
+            self.headers["Range"]="bytes=%d-%d"%(self.__class__.info[self.id]["start"],self.__class__.info[self.id]["end"])
+            res = requests.get(self.url,headers=self.headers,proxies=self.proxies)
+            if res.content:
+                self.RLock.acquire()
+                # with open(self.tmpFilename,'r') as file:
+                #     info = json.load(file)
+                # start = self.__class__.info[self.id]["start"]
+                self.__class__.info[self.id]["start"] = start + len(res.content) - 1
+                with open(self.tmpFilename,'w') as file:
+                    json.dump(self.__class__.info,file)
+                with open(self.filename,'r+b') as file:
+                    file.seek(start)
+                    var = file.tell()
+                    file.write(res.content)
                     file.flush()
                 self.RLock.release()
-
-                time.sleep(0.5)
+        # for chunk in res.iter_content(chunk_size = self.block):
 
 """ getTerminalSize()
  - get width and height of console
@@ -193,7 +210,7 @@ def main(url="",threadNum=5,filename=None,cookie="",UserAgent=None,referer="",pr
             for i in range(threadNum):
                 start = part * i
                 if i == threadNum -1:
-                    end = total + 1
+                    end = total
                 else :
                     end = start + part
                 threadInfo[str(i)] = {"start":start,"end":end}
