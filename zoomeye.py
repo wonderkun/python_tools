@@ -278,62 +278,6 @@ if __name__== '__main__':
     parse.add_argument("-e","--end",required=False,type=int,default=100,help="取搜索结果的结束行,默认到100行结束.")
     args = parse.parse_args()
 
-    zoomeye = Zoomeye(username="729173164@qq.com",password="123654789w",hostPrint=args.hostPrint,webPrint=args.webPrint)  # 修改这里为自己的账号和密码
-
+    zoomeye = Zoomeye(username="729173164@qq.com",password="",hostPrint=args.hostPrint,webPrint=args.webPrint)  # 修改这里为自己的账号和密码
     zoomeye.searchHander(searchKind=args.type,start=args.start,end=args.end,query=args.query,facets="")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
