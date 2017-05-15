@@ -1,18 +1,18 @@
-#!/usr/bin/python 
-#-*_coding:utf-8-*- 
+#!/usr/bin/python
+#-*_coding:utf-8-*-
 
 
-import requests 
+import requests
 import json
 from collections import namedtuple
 import argparse
 
 
-class Zoomeye(): 
+class Zoomeye():
     def __init__(self,username="",password="",hostPrint="",webPrint=""):
-        self.username = username 
+        self.username = username
         self.password = password
-        self.apiUrl = "https://api.zoomeye.org/" 
+        self.apiUrl = "https://api.zoomeye.org/"
         self.table = []  # 存储结果
 
         self.hostPrint = hostPrint.split()
@@ -25,7 +25,7 @@ class Zoomeye():
         data = '{"username":"'+self.username+'","password":"'+self.password+'"}'
         req = self.__http(searchKind="user",method="POST",data=data,proxy={})
         result = json.loads(req.text)
-        # print result 
+        # print result
         self.__accessToken__ = result["access_token"]
 
     def searchWeb(self,header={},data=""):
@@ -33,7 +33,7 @@ class Zoomeye():
         参数
         query	string	查询关键词	必须	port:80 nginx
         page	integer	翻页参数(默认为1)	可选	7
-        facets	string	统计项目，如果为多个，使用, 号分隔各个统计项	可选	app,device 
+        facets	string	统计项目，如果为多个，使用, 号分隔各个统计项	可选	app,device
 
         Web 应用搜索过滤器
 
@@ -93,15 +93,15 @@ class Zoomeye():
         }
 
         startPage = 0
-        endPage = 0 
+        endPage = 0
         if (end - start -10)<0:  #  因为一页是10条记录
             startPage = start/10+1
             endPage = startPage+1
-        else: 
+        else:
             startPage = start/10+1
-            endPage  = end/10+1 
+            endPage  = end/10+1
 
-        for i in range(startPage,endPage): 
+        for i in range(startPage,endPage):
             data = "query="+query+"&page="+str(i)+"&facets="+facets
             if searchKind == "host":
                 req = self.searchHost(header=header,data=data)
@@ -118,7 +118,7 @@ class Zoomeye():
     def pprinttable(self):
         rows = self.table
         # print rows
-        # return 
+        # return
 
         if len(rows) > 0:
             headers = rows[0]._fields
@@ -149,7 +149,7 @@ class Zoomeye():
             print separator
 
 
-    
+
     def __http(self,searchKind="host",header ={},proxy={},method="GET",data=""):
 
         searchKind = searchKind.lower()
@@ -160,29 +160,29 @@ class Zoomeye():
         elif searchKind == "web":
             url = self.apiUrl+"web/search"
         else :
-            return 
+            return
 
         method = method.upper()
         if method == "GET":
             try :
                 req = requests.get(url,params=data,proxies=proxy,headers = header,timeout=4)
                 # print req.url
-                return req 
-            except  Exception as e:
-                print "[*] an error occur:",e
-                return 
-        elif method == "POST":
-            try:
-                req = requests.post(url,data=data,proxies=proxy,headers = header,timeout=4)
-                return req 
+                return req
             except  Exception as e:
                 print "[*] an error occur:",e
                 return
-        else : 
-            return 
+        elif method == "POST":
+            try:
+                req = requests.post(url,data=data,proxies=proxy,headers = header,timeout=4)
+                return req
+            except  Exception as e:
+                print "[*] an error occur:",e
+                return
+        else :
+            return
 
     def printHander(self,searchKind="host",matches=[]):
-        
+
         hostPrintList = {  # host 打印参数和对应键值之间的关系
             "I":"ip",
             "P":"port",
@@ -209,7 +209,7 @@ class Zoomeye():
             "SN":"serverName"
         }
 
-        # self.hostPrint = 
+        # self.hostPrint =
         if searchKind == "host":
             printFormat = ["id"] + [ hostPrintList[x] for x in self.hostPrint]
         elif searchKind == "web":
@@ -220,7 +220,7 @@ class Zoomeye():
         # print json.dumps(matches,indent=4)
         content = {}
 
-        if searchKind == "host":        
+        if searchKind == "host":
             ### for host search
             for matche in matches:
                 self.id += 1
@@ -244,12 +244,12 @@ class Zoomeye():
 
         # self.Row = namedtuple("Row",["id","ip","dbver","dbname","city","country","continent","language","webappVer","webappName","serverVer","serverName"])
         elif searchKind == "web":
-            ### for web search 
+            ### for web search
             for matche in matches:
                 self.id += 1
                 content["id"] = str(self.id)
                 content["ip"] = matche["ip"][0].replace("\r\n","")
-                content["dbver"] = matche["db"][0]["version"].replace("\r\n","") if matche["db"][0]["version"] else "" 
+                content["dbver"] = matche["db"][0]["version"].replace("\r\n","") if matche["db"][0]["version"] else ""
                 content["dbname"] = matche["db"][0]["name"].replace("\r\n","")
                 content["city"] = matche["geoinfo"]["city"]["names"]["en"].replace("\r\n","")
                 content["country"] = matche["geoinfo"]["country"]["names"]["en"].replace("\r\n","")
@@ -260,7 +260,7 @@ class Zoomeye():
                 content["serverVer"] = matche["server"][0]["version"].replace("\r\n","") if  matche["server"][0]["version"] else ""
                 content["serverName"] = matche["server"][0]["name"].replace("\r\n","")
                 # self.table.append(self.Row(str(self.id),ip,dbver,dbname,city,country,continent,language,webappVer,webappName,serverVer,serverName))
-        
+
                 row = []
                 for name in printFormat:
                     row.append(content[name])
@@ -280,4 +280,3 @@ if __name__== '__main__':
 
     zoomeye = Zoomeye(username="729173164@qq.com",password="",hostPrint=args.hostPrint,webPrint=args.webPrint)  # 修改这里为自己的账号和密码
     zoomeye.searchHander(searchKind=args.type,start=args.start,end=args.end,query=args.query,facets="")
-
