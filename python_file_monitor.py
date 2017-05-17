@@ -12,7 +12,7 @@ class FileMonitor(threading.Thread):
     def __init__(self,monitorPath=None,backupPath=None):
         super(FileMonitor,self).__init__()
         self.monitorPath = os.path.abspath(monitorPath).rstrip("/")+"/"  if monitorPath is not None else os.getcwd()+"/"
-        self.backupPath = os.path.abspath(backupPath).rsplit("/")+"/" if backupPath is not None else None
+        self.backupPath = os.path.abspath(backupPath).rstrip("/")+"/" if backupPath is not None else None
         self.pathFileHash = {}
         self.currentPathHash = {}
         self.getFileHash = self.useMd5sum if os.path.exists("/usr/bin/md5sum") else self.useHashLib
@@ -25,7 +25,7 @@ class FileMonitor(threading.Thread):
         fileContent = open(fileName).read()
         md5 =  hashlib.md5()
         md5.update(fileContent)
-        return hashlib.hexdigest
+        return md5.hexdigest()
 
     def walk(self,path):
         allFile = os.listdir(path)
