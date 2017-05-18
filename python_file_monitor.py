@@ -88,7 +88,7 @@ class FileMonitor(threading.Thread):
                         if self.backupPath is not None:
                             try:
                                 print "[*] try to move previous file to current path!"
-                                oldFileName = os.path.join(self.backupPath,fileName.lstrip(self.monitorPath))
+                                oldFileName = os.path.join(self.backupPath,fileName.replace(self.monitorPath,"",1))
                                 shutil.copyfile(oldFileName,fileName)
                             except Exception as e:
                                 print "[*] repair deleted file error!",e
