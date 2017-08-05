@@ -74,7 +74,7 @@ class FileMonitor(threading.Thread):
                      if self.backupPath is not None:
                          try:
                              print "[*] try to move previous file to current path!"
-                             shutil.copyfile(os.path.join(self.backupPath,fileName.lstrip(self.monitorPath)),fileName)
+                             shutil.copyfile(os.path.join(self.backupPath,fileName.replace(self.monitorPath,"",1)),fileName)
                          except Exception as e:
                              print "[*] move previous file to current path error!",e
     def run(self):
