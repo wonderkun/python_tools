@@ -30,6 +30,8 @@ class CollectionInfo(object):
         phpstorm/   .idea/workspace.xml
         CVS http://www.am0s.com/CVS/Root 返回根信息 http://www.am0s.com/CVS/Entries 返回所有文件的结构
         bk clone http://url/name dir
+        WEB-INF/web.xml 
+
     """
     def __init__(self,url='',file=''):
 
@@ -39,7 +41,7 @@ class CollectionInfo(object):
         self.fileBackList = ['.bak','.','~','.pyc','.swp','.swpx','.swm','.swo','.swn']
         self.fileList = ['.viminfo','index.bak','index.tar.gz','index.zip','index.rar','www.tar.gz','www.rar','www.zip','.svn','.git','.DS_Store',
         'robots.txt','.idea/','.hg','www.7z','WEB-INF/web.xml','WEB-INF/classes/','WEB-INF/lib/','WEB-INF/src/',
-        'WEB-INF/database.properties','CVS','phpMyAdmin','phpmyadmin']
+        'WEB-INF/database.properties','CVS/','CVS/Root','CVS/Entries','phpMyAdmin','phpmyadmin']
         self.vimBackList = ['','~','.swp','.swpx','.swm','.swo','.swn']
         self.UrlList = []
         self.getUrlList()
