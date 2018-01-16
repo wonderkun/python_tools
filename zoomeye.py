@@ -25,7 +25,6 @@ class Zoomeye():
         data = '{"username":"'+self.username+'","password":"'+self.password+'"}'
         req = self.__http(searchKind="user",method="POST",data=data,proxy={})
         result = json.loads(req.text)
-        # print result
         self.__accessToken__ = result["access_token"]
 
     def searchWeb(self,header={},data=""):
@@ -94,12 +93,12 @@ class Zoomeye():
 
         startPage = 0
         endPage = 0
-        if (end - start -10)<0:  #  因为一页是10条记录
-            startPage = start/10+1
+        if (end - start -20)<0:  #  因为一页是20条记录
+            startPage = start/20+1
             endPage = startPage+1
         else:
-            startPage = start/10+1
-            endPage  = end/10+1
+            startPage = start/20+1
+            endPage  = end/20+1
 
         for i in range(startPage,endPage):
             data = "query="+query+"&page="+str(i)+"&facets="+facets
@@ -125,7 +124,8 @@ class Zoomeye():
             lens = []
             for i in range(len(rows[0])):
                 # max( [x[i] for x in rows] + [headers[i]],key=lambda x:len(str(x)) )
-                lens.append(len(max( [x[i] for x in rows] + [headers[i]],key=lambda x:len(str(x)))))
+                # print rows
+                lens.append(len(max( [x[i] for x in rows] + [headers[i]],key=lambda x:len(str(x.encode("utf-8"))))))
             formats = []
             hformats = []
             for i in range(len(rows[0])):
@@ -173,6 +173,7 @@ class Zoomeye():
                 return
         elif method == "POST":
             try:
+                header = {"Content-Type":"application/x-www-form-urlencoded"}
                 req = requests.post(url,data=data,proxies=proxy,headers = header,timeout=4)
                 return req
             except  Exception as e:
