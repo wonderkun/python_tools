@@ -49,7 +49,6 @@ def sync():
     global server, user, port, source, target, option
 
     cmd = "rsync %s %s %s %s@%s:%s" % (port, options, source, user, server, target)
-    print cmd
     runCmd(cmd)
 
 def download():
@@ -85,8 +84,7 @@ class OnChangeHandler(pyinotify.ProcessEvent):
 
 def auto_sync():
     global source
-    wm = pyinotify.WatchManager() 
-    
+    wm = pyinotify.WatchManager()
     mask = pyinotify.IN_CREATE | pyinotify.IN_DELETE | pyinotify.IN_MODIFY
     notifier = pyinotify.Notifier(wm, OnChangeHandler())
     wm.add_watch(source, mask, rec=True, auto_add=True)
