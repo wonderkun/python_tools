@@ -31,7 +31,11 @@ class CollectionInfo(object):
         CVS http://www.am0s.com/CVS/Root 返回根信息 http://www.am0s.com/CVS/Entries 返回所有文件的结构
         bk clone http://url/name dir
         WEB-INF/web.xml 
-
+        /WEB-INF/web.xml：Web应用程序配置文件，描述了 servlet 和其他的应用组件配置及命名规则。
+        /WEB-INF/classes/：含了站点所有用的 class 文件，包括 servlet class 和非servlet class。
+        /WEB-INF/lib/：存放web应用需要的各种JAR文件，放置仅在这个应用中要求使用的jar文件,如数据库驱动jar文件
+        /WEB-INF/src/：源码目录，按照包名结构放置各个java文件。
+        /WEB-INF/database.properties：数据库配置文件。
     """
     def __init__(self,url='',file=''):
 
