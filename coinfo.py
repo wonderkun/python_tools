@@ -62,7 +62,7 @@ class CollectionInfo(object):
 
     def printSelf(self):
         for i in self.UrlList:
-            print i
+            print(i)
 
     def sendRequest(self,cookies="",agent=""):
         cookies = cookies
@@ -73,7 +73,7 @@ class CollectionInfo(object):
         }
         for  url in self.UrlList:
             res = requests.get(url,headers=header)
-            print url ,res.status_code
+            print(url ,res.status_code)
             if res.status_code != 404:
                 self.table.append(self.Row(url,res.status_code))
 
@@ -98,14 +98,14 @@ class CollectionInfo(object):
             hpattern = "|"+" | ".join(hformats)+"|"
             separator = "+"+"-+-".join(['-' * n for n in lens])+"+"
 
-            print separator
-            print hpattern % tuple(headers)
-            print separator
+            print(separator)
+            print(hpattern % tuple(headers))
+            print(separator)
             _u = lambda t: t.decode('UTF-8', 'replace') if isinstance(t, str) else t
             for line in rows:
                 # print separator
-                print hpattern % tuple(_u(t) for t in line)
-            print separator
+                print(hpattern % tuple(t for t in line))
+            print(separator)
 
         # elif len(rows) == 1:
         #     row = rows[0]
