@@ -14,6 +14,7 @@ import http.cookiejar
 import copy
 import time
 import string
+import IPython
 from collections import defaultdict
 
 # class httpheader(mimetools.Message):
@@ -225,7 +226,7 @@ class hackhttp():
         charset = None
         r = re.search(r'charset=(\S+)', head, re.I)
         if not r:
-            r = re.search(r'charset=[\'"]*([^\r\n\'">]+)', body, re.I)
+            r = re.search(rb'charset=[\'"]*([^\r\n\'">]+)', body, re.I)
         if r:
             charset = r.group(1).lower()
             if charset == 'utf-8':
