@@ -27,6 +27,32 @@ from collections import defaultdict
 #             return line[:i]
 #         return None
 
+class log():
+    
+    colorTable = {
+        "success":"\033[1;32m+\033[0m",
+        "error": "\033[1;31m!\033[0m",
+        "info":"\033[1;34m*\033[0m",
+        "debug":"\033[1;31mDEBUG\033[0m"
+    }
+
+    @staticmethod
+    def success(string):
+        print("[{}] {}".format( log.colorTable["success"],string))
+
+    @staticmethod
+    def error(string):
+        print("[{}] {}".format( log.colorTable["error"],string))
+
+    @staticmethod
+    def info(string):
+        print("[{}] {}".format( log.colorTable["info"],string))
+    
+    @staticmethod
+    def debug(string):
+        print("[{}] {}".format(log.colorTable["debug"],string))
+
+
 class httpheader(object):
     def __init__(self,fp,seekable=1):
         self.fp = fp
